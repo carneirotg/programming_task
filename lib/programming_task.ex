@@ -14,8 +14,8 @@ defmodule ProgrammingTask do
       supervisor(ProgrammingTask.Endpoint, []),
       # Start your own worker by calling: ProgrammingTask.Worker.start_link(arg1, arg2, arg3)
       # worker(ProgrammingTask.Worker, [arg1, arg2, arg3]),
-      worker(ProgrammingTask.SensorMessageQueue, [AGT_1], name: ProgrammingTask.SensorMessageQueue),
-      worker(ProgrammingTask.SensorMessageQueue, [AGT_2], name: ProgrammingTask.SensorMessageQueue),
+      worker(ProgrammingTask.SensorMessageQueueOne, [AGT_1]),
+      worker(ProgrammingTask.SensorMessageQueueTwo, [AGT_2]),
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

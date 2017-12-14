@@ -1,18 +1,18 @@
 defmodule ProgrammingTask.SensorMessageController do
   use ProgrammingTask.Web, :controller
 
-  alias ProgrammingTask.SensorMessageQueue
+  alias ProgrammingTask.SensorMessageQueueOne
+  alias ProgrammingTask.SensorMessageQueueTwo
   alias ProgrammingTask.Utils
 
   def create(
         conn,
-        params = %{ "sensorId" => "AGT0002"}
+        params = %{"sensorId" => "AGT0002"}
       ) do
     sensor_message = deserialize_sensor_message(params)
 
-
     if is_map(sensor_message) do
-      SensorMessageQueue.enqueue(sensor_message)
+      SensorMessageQueueTwo.enqueue(sensor_message)
 
       conn
       |> put_status(201)
@@ -22,8 +22,6 @@ defmodule ProgrammingTask.SensorMessageController do
       |> put_status(400)
       |> text(elem(sensor_message, 1))
     end
-
-
   end
 
   def create(
@@ -31,21 +29,21 @@ defmodule ProgrammingTask.SensorMessageController do
         params = %{"sensorId" => "AGT0001"}
       ) do
     sensor_message = deserialize_sensor_message(params)
-    status = {201, "OK"}
 
     if is_map(sensor_message) do
-      SensorMessageQueue.push(sensor_message)
-    else
-      status = {400, elem(sensor_message, 1)}
-    end
+      SensorMessageQueueOne.enqueue(sensor_message)
 
-    conn
-    |> put_status(elem(status, 0))
-    |> text(elem(status, 1))
+      conn
+      |> put_status(201)
+      |> text("OK")
+    else
+      conn
+      |> put_status(400)
+      |> text(elem(sensor_message, 1))
+    end
   end
 
   def create(conn, params = %{"_json" => elements}) do
-
     if not is_nil(params["_json"]) do
       filter_list(params["_json"])
 
@@ -59,20 +57,21 @@ defmodule ProgrammingTask.SensorMessageController do
     end
   end
 
-  #Helper functions
+  # Helper functions
   def filter_list(params) do
-    Enum.map(params, fn(element) ->
+    Enum.map(params, fn element ->
       IO.inspect(element["sensorId"])
+
       case element["sensorId"] do
         "AGT0001" ->
           element
           |> deserialize_sensor_message
-          |> SensorMessageQueue.enqueue
+          |> SensorMessageQueueOne.enqueue()
 
         "AGT0002" ->
           element
           |> deserialize_sensor_message
-          |> SensorMessageQueue.enqueue
+          |> SensorMessageQueueTwo.enqueue()
       end
     end)
   end

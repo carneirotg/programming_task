@@ -1,4 +1,4 @@
-defmodule ProgrammingTask.SensorMessageQueue do
+defmodule ProgrammingTask.SensorMessageQueueTwo do
   use GenServer
 
   # server
@@ -8,7 +8,7 @@ defmodule ProgrammingTask.SensorMessageQueue do
   end
 
   def handle_cast({:enqueue, value}, queue) do
-    IO.puts("handle_cast!")
+    IO.puts("handle_cast TWO!")
 
     if is_nil(queue.first_time) do
 
@@ -27,13 +27,13 @@ defmodule ProgrammingTask.SensorMessageQueue do
           elements: [value | queue.elements]
       }
     end
-
+    IO.inspect(queue)
     {:noreply, queue}
   end
 
   def handle_info(:write, queue) do
     IO.puts("handle_info!")
-    IO.inspect(queue)
+    # IO.inspect(queue)
 
     if not is_nil(queue.first_time) do
       if DateTime.diff(queue.last_time, queue.first_time) >= 60 do
