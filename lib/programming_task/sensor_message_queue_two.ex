@@ -1,6 +1,8 @@
 defmodule ProgrammingTask.SensorMessageQueueTwo do
   use GenServer
 
+  @scheduled_time 5000
+
   # server
   def init(queue) do
     schedule_write_to_elastic()
@@ -58,8 +60,7 @@ defmodule ProgrammingTask.SensorMessageQueueTwo do
   end
 
   defp schedule_write_to_elastic do
-    # 5 seconds
-    Process.send_after(self(), :write, 5000)
+    Process.send_after(self(), :write, @scheduled_time)
   end
 
   def enqueue(value), do: GenServer.cast(__MODULE__, {:enqueue, value})

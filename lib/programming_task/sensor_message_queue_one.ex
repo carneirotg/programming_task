@@ -1,6 +1,8 @@
 defmodule ProgrammingTask.SensorMessageQueueOne do
   use GenServer
 
+  @scheduled_time 5000
+
   # server
   def init(queue) do
     schedule_write_to_elastic()
@@ -10,23 +12,23 @@ defmodule ProgrammingTask.SensorMessageQueueOne do
   def handle_cast({:enqueue, value}, queue) do
     IO.puts("handle_cast!")
 
-    if is_nil(queue.first_time) do
+    case queue.first.time do
+      nil ->
+        queue =
+          queue
+          |> put_in([:first, :index], 0)
+          |> put_in([:first, :time], value.created_time)
+          |> put_in([:last, :time], value.created_time)
+          |> put_in([:elements], [value | queue.elements])
 
-      queue = %{
+      _ ->
+      queue =
         queue
-        | first_time: value.created_time,
-          last_time: value.created_time,
-          elements: [value | queue.elements]
-      }
-
-      {:noreply, queue}
-    else
-      queue = %{
-        queue
-        | last_time: value.created_time,
-          elements: [value | queue.elements]
-      }
+        |> put_in([:last, :time], value.created_time)
+        |> put_in([:last, :index], length(queue.elements))
+        |> put_in([:elements], [value | queue.elements])
     end
+
     IO.inspect(queue)
     {:noreply, queue}
   end
@@ -35,31 +37,34 @@ defmodule ProgrammingTask.SensorMessageQueueOne do
     IO.puts("handle_info!")
     # IO.inspect(queue)
 
-    if not is_nil(queue.first_time) do
-      if DateTime.diff(queue.last_time, queue.first_time) >= 60 do
-        window = []
-        Enum.map(queue, fn(element) ->
+    window = queue
+    if not is_nil(window.first.time) do
+      if DateTime.diff(window.last.time, window.first.time) >= 60 do
+        range = window.last.index..window.first.index
 
-        end)
-
+    #     window = []
+    #     Enum.map(queue.elements, fn(element) ->
+    #       case Datetime.compare(element.created_time, queue.last_time)
+    #     end)
+    #
       end
     end
 
 
-    # schedule_write_to_elastic()
+    schedule_write_to_elastic()
     {:noreply, queue}
   end
 
   ### Client API / Helper functions
 
   def start_link(state \\ []) do
-    queue = %{first_time: nil, last_time: nil, elements: []}
+    queue = %{first: %{time: nil, index: nil}, last: %{time: nil, index: nil}, elements: []}
     GenServer.start_link(__MODULE__, queue, name: __MODULE__)
   end
 
   defp schedule_write_to_elastic do
     # 5 seconds
-    Process.send_after(self(), :write, 5000)
+    Process.send_after(self(), :write, @scheduled_time)
   end
 
   def enqueue(value), do: GenServer.cast(__MODULE__, {:enqueue, value})

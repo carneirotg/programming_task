@@ -6,7 +6,7 @@ defmodule ProgrammingTask.Utils do
       {:error, reason} ->
         {:error, "createdTime is invalid."}
 
-      {:ok, parsed_datetime, 0} ->
+      {:ok, parsed_datetime, _} ->
         parsed_datetime
     end
   end
