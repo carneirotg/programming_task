@@ -16,20 +16,23 @@ defmodule ProgrammingTask.SensorMessageQueueOne do
       nil ->
         queue =
           queue
+          |> put_in([:sensor_id], value.sensor_id)
           |> put_in([:first, :index], 0)
           |> put_in([:first, :time], value.created_time)
           |> put_in([:last, :time], value.created_time)
+          |> put_in([:count], 1)
           |> put_in([:elements], [value | queue.elements])
 
       _ ->
       queue =
         queue
         |> put_in([:last, :time], value.created_time)
-        |> put_in([:last, :index], length(queue.elements))
+        # |> put_in([:last, :index], length(queue.elements))
         |> put_in([:elements], [value | queue.elements])
+        |> put_in([:count], queue.count + 1)
     end
 
-    IO.inspect(queue)
+    # IO.inspect(queue)
     {:noreply, queue}
   end
 
@@ -38,15 +41,19 @@ defmodule ProgrammingTask.SensorMessageQueueOne do
     # IO.inspect(queue)
 
     window = queue
+    # IO.inspect(window.last.time)
+    # IO.inspect(window.first.time)
     if not is_nil(window.first.time) do
       if DateTime.diff(window.last.time, window.first.time) >= 60 do
-        range = window.last.index..window.first.index
-
-    #     window = []
-    #     Enum.map(queue.elements, fn(element) ->
-    #       case Datetime.compare(element.created_time, queue.last_time)
-    #     end)
-    #
+        IO.inspect("passou dos 60!")
+        sliced_window = Enum.slice(window.elements, 0, window.count)
+        body = %{
+          start: DateTime.to_iso8601(window.first.time, :extended),
+          end: DateTime.to_iso8601(window.last.time, :extended),
+          sensorId: window.sensor_id,
+          avg: average(sliced_window)
+        }
+        post_to_elastic(body)
       end
     end
 
@@ -55,10 +62,14 @@ defmodule ProgrammingTask.SensorMessageQueueOne do
     {:noreply, queue}
   end
 
+  def post_to_elastic(params) do
+    IO.inspect(params)
+  end
+
   ### Client API / Helper functions
 
   def start_link(state \\ []) do
-    queue = %{first: %{time: nil, index: nil}, last: %{time: nil, index: nil}, elements: []}
+    queue = %{first: %{time: nil, index: nil}, last: %{time: nil, index: nil}, elements: [], count: 0, sensor_id: nil}
     GenServer.start_link(__MODULE__, queue, name: __MODULE__)
   end
 
