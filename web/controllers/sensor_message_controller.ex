@@ -1,8 +1,7 @@
 defmodule ProgrammingTask.SensorMessageController do
   use ProgrammingTask.Web, :controller
 
-  alias ProgrammingTask.SensorMessageQueueOne
-  alias ProgrammingTask.SensorMessageQueueTwo
+  alias ProgrammingTask.SensorMessageQueue
   alias ProgrammingTask.Utils
 
   def create(
@@ -12,7 +11,7 @@ defmodule ProgrammingTask.SensorMessageController do
     sensor_message = deserialize_sensor_message(params)
 
     if is_map(sensor_message) do
-      SensorMessageQueueTwo.enqueue(sensor_message)
+      SensorMessageQueue.enqueue(sensor_message, AGT_2)
 
       conn
       |> put_status(201)
@@ -31,7 +30,7 @@ defmodule ProgrammingTask.SensorMessageController do
     sensor_message = deserialize_sensor_message(params)
 
     if is_map(sensor_message) do
-      SensorMessageQueueOne.enqueue(sensor_message)
+      SensorMessageQueue.enqueue(sensor_message, AGT_1)
 
       conn
       |> put_status(201)
@@ -43,9 +42,9 @@ defmodule ProgrammingTask.SensorMessageController do
     end
   end
 
-  def create(conn, params = %{"_json" => elements}) do
-    if not is_nil(params["_json"]) do
-      filter_list(params["_json"])
+  def create(conn, %{"_json" => elements}) do
+    if not is_nil(elements) do
+      filter_list(elements)
 
       conn
       |> put_status(201)
@@ -57,6 +56,19 @@ defmodule ProgrammingTask.SensorMessageController do
     end
   end
 
+  #Endpoint to handle errors within the sensorIds
+  def create(conn, params) do
+    conn
+    |> put_status(400)
+    |> text("The sensorId sent does not exist.")
+  end
+
+  def health(conn, params) do
+    conn
+    |> put_status(200)
+    |> text("OK")
+  end
+
   # Helper functions
   def filter_list(params) do
     Enum.map(params, fn element ->
@@ -66,12 +78,12 @@ defmodule ProgrammingTask.SensorMessageController do
         "AGT0001" ->
           element
           |> deserialize_sensor_message
-          |> SensorMessageQueueOne.enqueue()
+          |> SensorMessageQueue.enqueue(AGT_1)
 
         "AGT0002" ->
           element
           |> deserialize_sensor_message
-          |> SensorMessageQueueTwo.enqueue()
+          |> SensorMessageQueue.enqueue(AGT_2)
       end
     end)
   end

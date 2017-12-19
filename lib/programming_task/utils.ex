@@ -3,7 +3,7 @@ defmodule ProgrammingTask.Utils do
 
   def check_date_time(date_time) do
     case DateTime.from_iso8601(date_time) do
-      {:error, reason} ->
+      {:error, _} ->
         {:error, "createdTime is invalid."}
 
       {:ok, parsed_datetime, _} ->

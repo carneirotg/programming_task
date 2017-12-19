@@ -20,7 +20,7 @@ defmodule ProgrammingTask.Mixfile do
   def application do
     [
       mod: {ProgrammingTask, []},
-      extra_applications: [:logger]
+      extra_applications: [:elastix, :logger]
     ]
   end
 
@@ -35,10 +35,11 @@ defmodule ProgrammingTask.Mixfile do
     [
       {:phoenix, "~> 1.3.0-rc"},
       {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_ecto, "~> 3.2"},
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"}
+      {:cowboy, "~> 1.0"},
+      {:elastix, "~> 0.5.0"},
+      {:poison, "~> 3.1"}
     ]
   end
 
@@ -50,9 +51,7 @@ defmodule ProgrammingTask.Mixfile do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test": ["ecto.create --quiet", "ecto.migrate", "test"]
+      "test": ["test"]
     ]
   end
 end

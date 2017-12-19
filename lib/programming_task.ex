@@ -8,14 +8,14 @@ defmodule ProgrammingTask do
 
     # Define workers and child supervisors to be supervised
     children = [
-      # Start the Ecto repository
-      supervisor(ProgrammingTask.Repo, []),
       # Start the endpoint when the application starts
       supervisor(ProgrammingTask.Endpoint, []),
-      # Start your own worker by calling: ProgrammingTask.Worker.start_link(arg1, arg2, arg3)
-      # worker(ProgrammingTask.Worker, [arg1, arg2, arg3]),
-      worker(ProgrammingTask.SensorMessageQueueOne, [AGT_1], restart: :transient),
-      worker(ProgrammingTask.SensorMessageQueueTwo, [AGT_2], restart: :transient),
+      #Start the ElasticSearch server when the application starts.
+      #The configuration for Elastic server will be on this module.
+      worker(ProgrammingTask.ElasticHandler, [ELASTIC], [name: ELASTIC]),
+      #Queues to receive and process the messages received from the controller
+      worker(ProgrammingTask.SensorMessageQueue, [AGT_1], [id: AGT_1, name: AGT_1]),
+      worker(ProgrammingTask.SensorMessageQueue, [AGT_2], [id: AGT_2, name: AGT_2]),
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

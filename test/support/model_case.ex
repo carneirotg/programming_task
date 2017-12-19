@@ -16,24 +16,11 @@ defmodule ProgrammingTask.ModelCase do
 
   using do
     quote do
-      alias ProgrammingTask.Repo
 
-      import Ecto
-      import Ecto.Changeset
-      import Ecto.Query
       import ProgrammingTask.ModelCase
     end
   end
 
-  setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(ProgrammingTask.Repo)
-
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(ProgrammingTask.Repo, {:shared, self()})
-    end
-
-    :ok
-  end
 
   @doc """
   Helper for returning list of errors in a struct when given certain data.
@@ -50,9 +37,5 @@ defmodule ProgrammingTask.ModelCase do
 
       assert {:password, "is unsafe"} in errors_on(%User{}, %{password: "password"})
   """
-  def errors_on(struct, data) do
-    struct.__struct__.changeset(struct, data)
-    |> Ecto.Changeset.traverse_errors(&ProgrammingTask.ErrorHelpers.translate_error/1)
-    |> Enum.flat_map(fn {key, errors} -> for msg <- errors, do: {key, msg} end)
-  end
+
 end

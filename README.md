@@ -1,20 +1,22 @@
-# ProgrammingTask
+# Overview
 
-To start your Phoenix app:
+A RESTful application to handle requests from Sensors, calculating them average acceleration and
+writing to an ElasticSearch server.
 
+# Requirements
+  * Erlang >=18
+  * Elixir >= 1.4
+  * Phoenix >= 1.3
+
+# Configuration
+The Port settings is inside `config/dev.exs` and the
+ElasticSearch and HostName configurations are inside `config/config.exs`
+
+# Usage
   * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
-  * Start Phoenix endpoint with `mix phoenix.server`
+  * If you wish to test it also run an ElasticSearch server. Ex: `docker run -p 9200:9200 -it --rm elasticsearch:5.1.2`
+  * Run `mix phx.server`
+  The application will be available at `http://localhost:4001`
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
-
-## Learn more
-
-  * Official website: http://www.phoenixframework.org/
-  * Guides: http://phoenixframework.org/docs/overview
-  * Docs: https://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
-# programming_task
+# Running Tests
+Run `mix test` to run all unit tests.

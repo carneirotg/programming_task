@@ -17,41 +17,16 @@ defmodule ProgrammingTask.Web do
   and import those modules here.
   """
 
-  def model do
-    quote do
-      use Ecto.Schema
-
-      import Ecto
-      import Ecto.Changeset
-      import Ecto.Query
-    end
-  end
 
   def controller do
     quote do
       use Phoenix.Controller
 
-      alias ProgrammingTask.Repo
-      import Ecto
-      import Ecto.Query
-
       import ProgrammingTask.Router.Helpers
       import ProgrammingTask.Gettext
     end
   end
 
-  def view do
-    quote do
-      use Phoenix.View, root: "web/templates"
-
-      # Import convenience functions from controllers
-      import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
-
-      import ProgrammingTask.Router.Helpers
-      import ProgrammingTask.ErrorHelpers
-      import ProgrammingTask.Gettext
-    end
-  end
 
   def router do
     quote do
@@ -63,9 +38,6 @@ defmodule ProgrammingTask.Web do
     quote do
       use Phoenix.Channel
 
-      alias ProgrammingTask.Repo
-      import Ecto
-      import Ecto.Query
       import ProgrammingTask.Gettext
     end
   end

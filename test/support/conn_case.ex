@@ -7,10 +7,6 @@ defmodule ProgrammingTask.ConnCase do
   import other functionality to make it easier
   to build and query models.
 
-  Finally, if the test case interacts with the database,
-  it cannot be async. For this reason, every test runs
-  inside a transaction which is reset at the beginning
-  of the test unless the test case is marked as async.
   """
 
   use ExUnit.CaseTemplate
@@ -20,11 +16,6 @@ defmodule ProgrammingTask.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
 
-      alias ProgrammingTask.Repo
-      import Ecto
-      import Ecto.Changeset
-      import Ecto.Query
-
       import ProgrammingTask.Router.Helpers
 
       # The default endpoint for testing
@@ -33,12 +24,7 @@ defmodule ProgrammingTask.ConnCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(ProgrammingTask.Repo)
-
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(ProgrammingTask.Repo, {:shared, self()})
-    end
-
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
+
 end

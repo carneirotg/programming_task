@@ -9,5 +9,6 @@ defmodule ProgrammingTask.Router do
     pipe_through :api
 
     post "/measurements", SensorMessageController, :create
+    get "/health", SensorMessageController, :health
   end
 end
