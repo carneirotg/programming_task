@@ -8,12 +8,3 @@ config :programming_task, ProgrammingTask.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
-
-# Configure your database
-config :programming_task, ProgrammingTask.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "thiagocarneiro",
-  password: "0606",
-  database: "programming_task_test",
-  hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox

@@ -20,7 +20,7 @@ defmodule ProgrammingTask.Mixfile do
   def application do
     [
       mod: {ProgrammingTask, []},
-      extra_applications: [:elastix, :logger]
+      extra_applications: [:elastix, :logger, :timex]
     ]
   end
 
@@ -39,7 +39,8 @@ defmodule ProgrammingTask.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:elastix, "~> 0.5.0"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:timex, "~> 3.1"}
     ]
   end
 

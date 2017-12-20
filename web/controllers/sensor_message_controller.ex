@@ -57,22 +57,22 @@ defmodule ProgrammingTask.SensorMessageController do
   end
 
   #Endpoint to handle errors within the sensorIds
-  def create(conn, params) do
+  def create(conn, _params) do
     conn
-    |> put_status(400)
-    |> text("The sensorId sent does not exist.")
+    |> send_resp(404, "The sensorId sent is not registered.")
   end
 
-  def health(conn, params) do
+
+  def health(conn, _params) do
     conn
     |> put_status(200)
     |> text("OK")
   end
 
+
   # Helper functions
   def filter_list(params) do
     Enum.map(params, fn element ->
-      IO.inspect(element["sensorId"])
 
       case element["sensorId"] do
         "AGT0001" ->

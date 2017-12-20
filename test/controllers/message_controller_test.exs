@@ -92,7 +92,7 @@ defmodule ProgrammingTask.SensorMessageControllerTest do
       |> put_req_header("content-type", "application/json")
       |> post("/api/measurements", body)
 
-    assert conn.status == 400
-    assert conn.resp_body == "The sensorId sent does not exist."
+    assert conn.status == 404
+    assert conn.resp_body == "The sensorId sent is not registered."
   end
 end

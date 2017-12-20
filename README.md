@@ -9,7 +9,7 @@ writing to an ElasticSearch server.
   * Phoenix >= 1.3
 
 # Configuration
-The Port settings is inside `config/dev.exs` and the
+The `Port` settings is inside `config/dev.exs` and the
 ElasticSearch and HostName configurations are inside `config/config.exs`
 
 # Usage
@@ -18,5 +18,8 @@ ElasticSearch and HostName configurations are inside `config/config.exs`
   * Run `mix phx.server`
   The application will be available at `http://localhost:4001`
 
-# Running Tests
-Run `mix test` to run all unit tests.
+# Running Unit Tests
+Run `mix test` to run all controller tests.
+
+# Testing
+Run `curl -v -XPOST 'http://localhost:4001/api/measurements' -H 'Content-Type: application/json'  '{ "createdTime": "2017-10-06T19:31:54.942000Z", "sensorId": "AGT0001", "data": [-1,0.7,0.3], "dataType": "accelerometer", "dataUnit": "m/s^2" }'`
