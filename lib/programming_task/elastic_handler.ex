@@ -28,10 +28,6 @@ defmodule ProgrammingTask.ElasticHandler do
 
     search_in = [config.elastic_doc_type]
 
-    IO.inspect(
-      Elastix.Search.search(config.elastic_url, config.elastic_index_name, search_in, %{})
-    )
-
     {:noreply, config}
   end
 
